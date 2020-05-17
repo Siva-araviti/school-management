@@ -4,7 +4,7 @@
 
 <div class="row">
   <div class="col-12">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover">
       <thead>
         <tr>
           <th scope="col">ID</th>
@@ -12,12 +12,15 @@
           <th scope="col">Name</th>
           <th scope="col">Mobile</th>
           <th scope="col">Email</th>
+          <th scope="col">Total Fee</th>
+          <th scope="col">Paid</th>
+          <th scope="col">Due</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
         {% for student in students %}
-        <tr>
+        <tr class="student">
           <th scope="row">
             <a href="{% url 'students:student_details' pk=student.id %}">
               {{ student.id }}
@@ -34,9 +37,39 @@
               <a href="{% url 'students:student_details' pk=student.id %}">
               {{ student.mobile }}
           </td>
-          <td>
+           <td>
             <a href="{% url 'students:student_details' pk=student.id %}">
               {{ student.user.email }}
+          </td>
+          <td>
+            <a href="{% url 'students:student_details' pk=student.id %}">
+              {% if user|has_role:'admin'%}
+                {{ student.total_amount }}
+              {% elif user.get_username == student.user.username%}
+                {{ student.total_amount }}
+              {%else%}
+                Not Visible
+              {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'students:student_details' pk=student.id %}">
+               {% if user|has_role:'admin'%}
+                {{ student.paid_amount }}
+              {% elif user.get_username == student.user.username%}
+                {{ student.paid_amount }}
+              {%else%}
+                Not Visible
+              {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'students:student_details' pk=student.id %}">
+               {% if user|has_role:'admin'%}
+                {{ student.due_amount }}
+              {% elif user.get_username == student.user.username%}
+                {{ student.due_amount }}
+              {%else%}
+                Not Visible
+              {% endif %}
           </td>
           <td>
             <div class="btn-group" role="group" aria-label="Basic example">
@@ -71,4 +104,26 @@
 
 </div>
 
+  <script>
+      var rows = document.getElementsByTagName("tr")
+      var i = 1
+      {% if user|has_role:'admin'%}
+
+          {% for student in students %}
+            {% if student.due_amount != 0%}
+              rows[i++].style.backgroundColor = "rgba(255, 99, 71, 0.4)";
+            {% else %}
+              rows[i++].style.backgroundColor = "white";
+            {% endif %}
+          {% endfor %}
+      {%else%}
+          {% for student in students %}
+            {% if user.get_username == student.user.username %}
+              rows[i++].style.backgroundColor = "rgba(255, 99, 71, 0.4)";
+             {% endif %}
+          {% endfor %}
+     {% endif %}
+
+
+</script>
 {% endblock %}

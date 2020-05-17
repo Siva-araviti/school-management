@@ -10,6 +10,7 @@ from faker import Faker
 from students.models import Student
 from django.contrib.auth.models import User
 import traceback
+from rolepermissions.roles import assign_role
 
 fakegen = Faker()
 
@@ -40,6 +41,7 @@ def generate_student(n=10):
                 date_of_birth=date_of_birth,
                 user=user,
                 mobile=mobile)
+            assign_role(user, 'student')
             print("Student user name:-", username+"  Password:- "+username)
         except Exception as e:
             print(traceback.format_exc())
@@ -49,6 +51,6 @@ def generate_student(n=10):
 
 if __name__ == "__main__":
     print('Creating Fake Teachers....')
-    n = int(input('How many teachers do you wanna create?'))
+    n = int(input('How many students do you wanna create?'))
     generate_student(n)
     print('students created successfully.')
