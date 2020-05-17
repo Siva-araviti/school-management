@@ -1,0 +1,74 @@
+{% extends 'dashboard.html' %}
+{% load permission_tags %}
+{% block dashboard-body %}
+
+<div class="row">
+  <div class="col-12">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Registration</th>
+          <th scope="col">Name</th>
+          <th scope="col">Mobile</th>
+          <th scope="col">Email</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <th scope="row">
+            <a href="{% url 'students:student_details' pk=student.id %}">
+              {{ student.id }}
+          </th>
+          <td>
+            <a href="{% url 'students:student_details' pk=student.id %}">
+              {{ student.registration_number }}</td>
+          <td>
+            <a href="{% url 'students:student_details' pk=student.id %}">
+            <img src="{{ student.photo.url }}" class="mr-2 rounded-circle" height=24 width=24>
+            {{ student.user.username }}
+          </td>
+          <td>
+              <a href="{% url 'students:student_details' pk=student.id %}">
+              {{ student.mobile }}
+          </td>
+          <td>
+            <a href="{% url 'students:student_details' pk=student.id %}">
+              {{ student.user.email }}
+          </td>
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-success">
+                <a href="{% url 'students:student_details' pk=student.id %}"><p style="color:black">View</p></a>
+              </button>
+            </div>
+            {% if user|has_role:'admin'%}
+               <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-info">
+                  <a href="{% url 'students:update_student' pk=student.id %}"><p style="color:black">Edit</p></a>
+                </button>
+              </div>
+
+               <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-danger">
+                  <a href="{% url 'students:delete_student' pk=student.pk %}"<p style="color:black">Delete</p></a>
+                </button>
+              </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if user|has_role:'admin'%}
+      <a href="{% url 'students:export_users_details_csv' %}">
+      <button type="button" class="btn btn-outline-info float-right">
+        Export all Students</button></a>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock %}
