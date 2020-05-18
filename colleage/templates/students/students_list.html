@@ -4,6 +4,11 @@
 
 <div class="row">
   <div class="col-12">
+    {% if user|has_role:'admin'%}
+      <a href="{% url 'students:export_users_details_csv' %}">
+      <button type="button" class="btn btn-outline-info float-right">
+        Export all Students</button></a>
+    {% endif %}
     <table class="table table-bordered table-hover">
       <thead>
         <tr>
@@ -95,11 +100,7 @@
         {% endfor %}
       </tbody>
     </table>
-    {% if user|has_role:'admin'%}
-      <a href="{% url 'students:export_users_details_csv' %}">
-      <button type="button" class="btn btn-outline-info float-right">
-        Export all Students</button></a>
-    {% endif %}
+
   </div>
 
 </div>
@@ -119,8 +120,9 @@
       {%else%}
           {% for student in students %}
             {% if user.get_username == student.user.username %}
-              rows[i++].style.backgroundColor = "rgba(255, 99, 71, 0.4)";
-             {% endif %}
+              rows[i].style.backgroundColor = "rgba(255, 99, 71, 0.4)";
+            {% endif %}
+             i = i + 1;
           {% endfor %}
      {% endif %}
 
